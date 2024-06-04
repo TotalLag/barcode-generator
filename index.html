@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barcode Generator</title>
+    <style>
+      @media print {
+        *:not(canvas) {
+          display:none;
+        }
+        html, body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 90vh;
+        }
+      }
+      #barcodeContainer {
+        margin-top: 20px;
+      }
+      form {
+        display: flex;
+      }
+      form > * {
+        margin: 0 1em 0 0;
+      }
+    </style>
+  </head>
+  <body>
+      <form id="barcodeForm" onsubmit="event.preventDefault(); generateBarcode()">
+        <input type="text" id="labelInput" placeholder="Enter a label..." required />
+        <input type="text" id="barcodeInput" placeholder="Enter a barcode value..." required />
+        <button type="submit">Generate Barcode</button>
+        <button onclick="window.print()" style="float:right;">Print Barcode</button>
+      </form>
+      
+    <canvas id="barcodeContainer"></canvas>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    
+    <script>
+      function generateBarcode() {
+        const barcodeValue = $('#barcodeInput').val().trim();
+        const labelValue = $('#labelInput').val().trim();
+        
+        $(`<canvas id="barcodeContainer"></canvas>`).replaceAll('body > canvas');
+
+        const label = `${labelValue}\x0A\x09\x0D${barcodeValue}`
+        
+        JsBarcode("#barcodeContainer", barcodeValue, { text: label });
+      }
+      
+      $('#barcodeForm').on('submit', function (event) {
+          event.preventDefault();
+          generateBarcode();
+      });
+    </script>
+  </body>
+</html>
